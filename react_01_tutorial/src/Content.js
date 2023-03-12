@@ -1,40 +1,67 @@
 import React from 'react'
 import { useState } from 'react';
+import { FaTrashAlt } from 'react-icons/fa'
 
 
 const Content = () => {
-    const [name, setName] = useState('Deepak');
-    const [count, setCount] = useState(0);
-    // useState(0) implies the default value of count is 0
-    // Use them as const so that only the react state can change the values
+    const [items, setItems] = useState([
+        {
+            id:1,
+            checked: true,
+            item: 'kg chicken'
+        },
+        {
+            id:2,
+            checked: false,
+            item: 'garam masala'
+        },
+        {
+            id:3,
+            checked: false,
+            item:'Item 3'
+        }
+    ]);
 
-    const handleNameChange = () => {
-        const names = ['Bob',"Alen",'Kevin'];
-        const int = Math.floor(Math.random() * 3);
-        setName(names[int]);
+    
+
+    const handleCheck = (id) => {
+        const listItems = items.map((item) => item.id === id? {...item,checked: !item.checked} : item);
+        setItems(listItems);
+        localStorage.setItem('shoppinglist',JSON.stringify(listItems));
     }
 
-    const handleClick = (count) =>{
-        console.log(count+1);
-        setCount(count+1);
+    const handleDelete = (id) => {
+        const listItems = items.filter((item) => item.id !== id);
+        setItems(listItems);
+        localStorage.setItem('shoppinglist',JSON.stringify(listItems));
     }
 
-    const handleClick2 = (name) =>{
-        console.log(`${name} was clicked`);
-    }
-
-    const handleClick3 = (e) =>{
-        console.log(e.target.innerText);
-    }
     return (
         <main>
-            <p onClick={handleClick}>
-                Hello {name}!
-            </p>
-
-            <button onClick={handleNameChange}>Change name</button>
-            <button onClick={() => handleClick(count)}>Click it</button>
-            <button onClick={(e) => handleClick3(e)}>Click it</button>
+            {items.length ? (
+                <ul>
+                    {items.map((item) => (
+                        <li className='item' key ={item.id}>
+                            <input
+                                type = "checkbox"
+                                onChange={() => handleCheck(item.id)}
+                                checked={item.checked}
+                            />
+                            <label
+                                style={(item.checked)?{textDecoration:'line-through'}: null}
+                                onClick={() => handleCheck(item.id)}
+                            >{item.item}</label>
+                            <FaTrashAlt 
+                                onClick={() => handleDelete(item.id)}
+                                role="button" 
+                                tabIndex={0} 
+                            />
+                        </li>
+                    ))}
+                </ul>
+            ):(
+                <p style={{marginTop: '2rem'}}>Your List is empty</p>
+            )}
         </main>
     )
 }
