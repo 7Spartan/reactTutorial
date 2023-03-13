@@ -14,11 +14,9 @@ function App() {
   useEffect(() => {
     const fetchItems = async() =>{
       try{
-        console.log(contentUrl);
         const response = await fetch(contentUrl);
         if(!response.ok) throw Error('Did note receive expected data');
         const listItems = await response.json();
-        // console.log(listItems);
         setListItems(listItems);
         setFetchError(null);
       }catch (err){
